@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="da" style="font-size: 100%">
+<head>
+	<title>fcoo.dk - fcoo-unit - Demo</title>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv='x-dns-prefetch-control' content='on'>
+
+	<meta name='copyright' content='FCOO'>
+	<meta name='owner' content='FCOO'>
+</head>
+
+<body>
+See console
+<script src="bower_components.js"></script>
+<script src="../src/fcoo-unit.js"></script>
+<script>
+    var ns = window.fcoo.unit;
+
+console.log('START', ns);
+
+console.log('123m as m', ns.getLength(123));
+fcoo.settings.set('length', ns.NAUTICAL);
+console.log('1234m as nm', ns.getLength(1234));
+
+console.log('123m/s as m/s', ns.getSpeed(123));
+fcoo.settings.set('speed', ns.NAUTICAL);
+console.log('12.34m/s as knots', ns.getSpeed(12.34));
+fcoo.settings.set('speed', ns.METRIC2);
+console.log('12.34m/s as km/h', ns.getSpeed(12.34));
+
+</script>
+</body>
+</html>
