@@ -79,4 +79,45 @@
     addSetting('direction', ns.unit.DEGREE, [ns.unit.DEGREE, ns.unit.GRADIAN]);
 
 
+    /************************************************************************************
+    Define two new formats to convert distances in meter to kilometer or nautical miles
+    ************************************************************************************/
+/* TODO - include if needed
+    function numeralFormat( name, unit, factor ){
+        var regExp  = new RegExp('('+unit+')'),  // = /(km)/
+            regExp2 = new RegExp('\s?\\' + unit);  // = /\s?\km/
+
+        window.numeral.register('format', name, {
+            regexps: {
+                format  : regExp, // /(km)/,
+                unformat: regExp  ///(km)/
+            },
+            format: function(value, format, roundingFunction) {
+                var space = window.numeral._.includes(format, ' ' + unit) ? ' ' : '',
+                    output;
+                value = value / factor;
+
+                // check for space before
+                format = format.replace(regExp2, '');
+                output = window.numeral._.numberToFormat(value, format, roundingFunction);
+
+                if (window.numeral._.includes(output, ')')) {
+                    output = output.split('');
+                    output.splice(-1, 0, space + unit);
+                    output = output.join('');
+                } else {
+                    output = output + space + unit;
+                }
+
+                return output;
+            },
+            unformat: function(string) {
+                return window.numeral._.stringToNumber(string) * factor;
+            }
+        });
+    }
+
+    numeralFormat( 'kilometer', 'km', 1000 );
+    numeralFormat( 'nautical',  'nm', 1852 );
+*/
 }(jQuery, this, document));

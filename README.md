@@ -5,6 +5,8 @@
 ## Description
 Defines different formats for `"length"`, `"area"`, `"speed"`, `"direction"` in namespace `window.fcoo.unit` and set and load settings in [fcoo-settings](https://github.com/FCOO/fcoo-settings)
 
+<!-- Adds two new formats for distances: `km` and `nm` --->
+
 
 ## Installation
 ### bower
@@ -31,7 +33,6 @@ http://FCOO.github.io/fcoo-unit/demo/
 	window.fcoo.setting.set('speed', window.fcoo.unit.METRIC2 );
 	window.fcoo.unit.getSpeed( 12.34 ); //Return 44.424 = 12.34m/s as km/h
 
-
 ## Scale and Units
 
 | Scale/methods | `METRIC` | `METRIC2` | `NAUTICAL` | `DEGREE` | `GRADIAN` |
@@ -41,7 +42,21 @@ http://FCOO.github.io/fcoo-unit/demo/
 | `speed/getSpeed(m2)` | m/s | km/h | knots | - | - |
 | `direction/getDirection(deg)` | - | - | - | degree (0-360) | gradian (0-400) |
 
+<!--
+### Formats
+Two new formats are added:
+### `km`
+Convert distances in meter to kilometer 
 
+    numeral(1234.123).format("0,0.0km") //"1.2km"
+    numeral("12km").value(); //12000
+
+### `nm`
+Convert distances in meter to nautical miles
+
+    numeral(1234.123).format("0,0.0 nm") //"0.663 nm"
+    numeral("12nm").value(); //22344
+-->
 ## Copyright and License
 This plugin is licensed under the [MIT license](https://github.com/FCOO/fcoo-unit/LICENSE).
 
