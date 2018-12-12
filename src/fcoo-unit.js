@@ -120,4 +120,12 @@
     numeralFormat( 'kilometer', 'km', 1000 );
     numeralFormat( 'nautical',  'nm', 1852 );
 */
+
+    //Update the unit-formats when the number-format is changed
+    ns.events.on( window.fcoo.events.NUMBERFORMATCHANGED, function(){
+        ns.events.fire( window.fcoo.events.UNITCHANGED );
+    });
+
+
+
 }(jQuery, this, document));

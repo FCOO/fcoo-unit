@@ -19,10 +19,12 @@ See console
 
 console.log('START', ns);
 
+fcoo.settings.set('length', ns.METRIC);
 console.log('123m as m', ns.getLength(123));
 fcoo.settings.set('length', ns.NAUTICAL);
 console.log('1234m as nm', ns.getLength(1234));
 
+fcoo.settings.set('speed', ns.METRIC);
 console.log('123m/s as m/s', ns.getSpeed(123));
 fcoo.settings.set('speed', ns.NAUTICAL);
 console.log('12.34m/s as knots', ns.getSpeed(12.34));
