@@ -15,8 +15,7 @@
 	"use strict";
 
 	//Create fcoo-namespace
-    window.fcoo = window.fcoo || {};
-    var ns = window.fcoo;
+    var ns = window.fcoo = window.fcoo || {};
 
     ns.unit = ns.unit || {};
 
@@ -60,10 +59,10 @@
     });
 
     /***********************************************************
-    Set up and load the different formats via fcoo.settings
+    Set up and load the different formats via fcoo.globalSetting
     ***********************************************************/
     function addSetting(scaleId, defaultUnit, units){
-        ns.settings.add({
+        ns.globalSetting.add({
             id            : scaleId,
             validator     : function( unit ){ return units.indexOf(unit) > -1; },
             applyFunc     : function( unit ){ ns.unit[scaleId] = unit; },
@@ -79,53 +78,74 @@
     addSetting('direction', ns.unit.DEGREE, [ns.unit.DEGREE, ns.unit.GRADIAN]);
 
 
-    /************************************************************************************
-    Define two new formats to convert distances in meter to kilometer or nautical miles
-    ************************************************************************************/
-/* TODO - include if needed
-    function numeralFormat( name, unit, factor ){
-        var regExp  = new RegExp('('+unit+')'),  // = /(km)/
-            regExp2 = new RegExp('\s?\\' + unit);  // = /\s?\km/
+    /***********************************************************
+    Add content for globalSetting edit-form
 
-        window.numeral.register('format', name, {
-            regexps: {
-                format  : regExp, // /(km)/,
-                unformat: regExp  ///(km)/
-            },
-            format: function(value, format, roundingFunction) {
-                var space = window.numeral._.includes(format, ' ' + unit) ? ' ' : '',
-                    output;
-                value = value / factor;
+Længde/Length
+km  Kilometer   Kilometre
+nm  Sømil       Nautical mile
 
-                // check for space before
-                format = format.replace(regExp2, '');
-                output = window.numeral._.numberToFormat(value, format, roundingFunction);
+Areal/Area
+km2 Kvadratkilometer    Square kilometre
+nm2 Kvadratsømil        Square nautical mile
 
-                if (window.numeral._.includes(output, ')')) {
-                    output = output.split('');
-                    output.splice(-1, 0, space + unit);
-                    output = output.join('');
-                } else {
-                    output = output + space + unit;
-                }
+Fart/Speed
+m/s     Meter pr. sekund     Metre per second
+km/t    Kilometer i timen   km/h Kilometre per hour
+Kn      Knob                Knot
 
-                return output;
-            },
-            unformat: function(string) {
-                return window.numeral._.stringToNumber(string) * factor;
-            }
-        });
-    }
+Retning/Direction
+Grader (0-360)      Degree (0-360)
+Nygrader (0-400)    Gradian (0-400)
 
-    numeralFormat( 'kilometer', 'km', 1000 );
-    numeralFormat( 'nautical',  'nm', 1852 );
-*/
+ns.unit.METRIC  : 'METRIC',    //m, m2, m/s
+        METRIC2 : 'METRIC2',   //m, m2, km/t
+        NAUTICAL
+    ***********************************************************/
+    ns.globalSetting.addModalContent(ns.events.UNITCHANGED, [
+        {
+            id: 'length',
+            type: 'radiobuttongroup',
+            label: {icon:'fa-ruler-horizontal', text:{da:'Længde', en:'Length'}},
+            items: [
+                {id: ns.unit.METRIC,   text: 'km', title: {da:'Kilometer', en:'Kilometre'    }},
+                {id: ns.unit.NAUTICAL, text: 'nm', title: {da:'Sømil',     en:'Nautical mile'}},
+            ]
+        },
+        {
+            id: 'area',
+            type: 'radiobuttongroup',
+            label: {icon:'fa-ruler-combined', text:{da:'Areal', en:'Area'}},
+            items: [
+                {id: ns.unit.METRIC,   text: 'km<sup>2</sup>', title: {da:'Kvadratkilometer', en:'Square kilometre'     }},
+                {id: ns.unit.NAUTICAL, text: 'nm<sup>2</sup>', title: {da:'Kvadratsømil',     en:' Square nautical mile'}},
+            ]
+        },
+        {
+            id: 'speed',
+            type: 'radiobuttongroup',
+            label: {icon:'far fa-tachometer', text:{da:'Fart', en:'Speed'}},
+            items: [
+                {id: ns.unit.METRIC,   text: 'm/s',                   title: {da:'Meter pr. sekund',  en:'Metre per second'     }},
+                {id: ns.unit.METRIC2,  text: {da:'km/t', en:'km/h'},  title: {da:'Kilometer i timen', en:'Kilometre per hour'     }},
+                {id: ns.unit.NAUTICAL, text: {da:'Kn(ob)', en:'Kn(ot)'},                    title: {da:'Knob', en:'Knot'}},
+            ]
+        },
+        {
+            id: 'direction',
+            type: 'radiobuttongroup',
+            label: {icon:'fa-compass', text:{da:'Retning', en:'Direction'}},
+            items: [
+                {id: ns.unit.DEGREE,  text: {da:'Grader (0-360)',   en:'Degree (0-360)' }},
+                {id: ns.unit.GRADIAN, text: {da:'Nygrader (0-400)', en:'Gradian (0-400)'}}
+            ]
+        }
+    ]);
+
 
     //Update the unit-formats when the number-format is changed
-    ns.events.on( window.fcoo.events.NUMBERFORMATCHANGED, function(){
-        ns.events.fire( window.fcoo.events.UNITCHANGED );
+    ns.events.on( ns.events.NUMBERFORMATCHANGED, function(){
+        ns.events.fire( ns.events.UNITCHANGED );
     });
-
-
 
 }(jQuery, this, document));

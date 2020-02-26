@@ -8,6 +8,10 @@
 
 	<meta name='copyright' content='FCOO'>
 	<meta name='owner' content='FCOO'>
+     <link  href="css/all.css" rel="stylesheet">
+    <link  href="bower_components.css" rel="stylesheet">
+    <link  href="../src/fcoo-moment.css" rel="stylesheet">
+    <style>html, body {width:100%; height:100%}</style>
 </head>
 
 <body>
@@ -15,22 +19,33 @@ See console
 <script src="bower_components.js"></script>
 <script src="../src/fcoo-unit.js"></script>
 <script>
+        window.bsIsTouch = false;
+        window.bsIsTouch = (window.location.search =='?touch');
+        i18next.init();
+        i18next.changeLanguage('da');
+        i18next.options.fallbackLng = i18next.language == 'da' ? 'en' : 'da';
+
+
     var ns = window.fcoo.unit;
 
-console.log('START', ns);
+    console.log('START', ns);
 
-fcoo.settings.set('length', ns.METRIC);
-console.log('123m as m', ns.getLength(123));
-fcoo.settings.set('length', ns.NAUTICAL);
-console.log('1234m as nm', ns.getLength(1234));
+    fcoo.globalSetting.set({length: ns.METRIC});
+    console.log('123m as m', ns.getLength(123));
+    fcoo.globalSetting.set({length: ns.NAUTICAL});
+    console.log('1234m as nm', ns.getLength(1234));
 
-fcoo.settings.set('speed', ns.METRIC);
-console.log('123m/s as m/s', ns.getSpeed(123));
-fcoo.settings.set('speed', ns.NAUTICAL);
-console.log('12.34m/s as knots', ns.getSpeed(12.34));
-fcoo.settings.set('speed', ns.METRIC2);
-console.log('12.34m/s as km/h', ns.getSpeed(12.34));
+    fcoo.globalSetting.set({speed: ns.METRIC});
+    console.log('123m/s as m/s', ns.getSpeed(123));
+    fcoo.globalSetting.set({speed: ns.NAUTICAL});
+    console.log('12.34m/s as knots', ns.getSpeed(12.34));
+    fcoo.globalSetting.set({speed: ns.METRIC2});
+    console.log('12.34m/s as km/h', ns.getSpeed(12.34));
 
+    $('body').on('contextmenu', function(){
+        fcoo.globalSetting.edit(fcoo.events.UNITCHANGED);
+        return false;
+    });
 </script>
 </body>
 </html>
