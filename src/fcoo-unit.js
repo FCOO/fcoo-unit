@@ -136,8 +136,8 @@ ns.unit.METRIC  : 'METRIC',    //m, m2, m/s
             type: 'radiobuttongroup',
             label: {icon:'fa-compass', text:{da:'Retning', en:'Direction'}},
             items: [
-                {id: ns.unit.DEGREE,  text: {da:'Grader (0-360)',   en:'Degree (0-360)' }},
-                {id: ns.unit.GRADIAN, text: {da:'Nygrader (0-400)', en:'Gradian (0-400)'}}
+                {id: ns.unit.DEGREE,  text: {da:'Grader (0-360<sup>o</sup>)',   en:'Degree (0-360<sup>o</sup>)' }},
+                {id: ns.unit.GRADIAN, text: {da:'Nygrader (0-400<sup>g</sup>)', en:'Gradian (0-400<sup>g</sup>)'}}
             ]
         }
     ]);
