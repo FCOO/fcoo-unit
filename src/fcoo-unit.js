@@ -72,10 +72,10 @@
         });
     }
 
-    addSetting('length',    ns.unit.METRIC, [ns.unit.METRIC, ns.unit.NAUTICAL]);
-    addSetting('area',      ns.unit.METRIC, [ns.unit.METRIC, ns.unit.NAUTICAL]);
-    addSetting('speed',     ns.unit.METRIC, [ns.unit.METRIC, ns.unit.METRIC2, ns.unit.NAUTICAL]);
-    addSetting('direction', ns.unit.DEGREE, [ns.unit.DEGREE, ns.unit.GRADIAN]);
+    addSetting('length',    ns.unit.NAUTICAL, [ns.unit.METRIC, ns.unit.NAUTICAL]);
+    addSetting('area',      ns.unit.NAUTICAL, [ns.unit.METRIC, ns.unit.NAUTICAL]);
+    addSetting('speed',     ns.unit.NAUTICAL, [ns.unit.METRIC, ns.unit.METRIC2, ns.unit.NAUTICAL]);
+    addSetting('direction', ns.unit.DEGREE,   [ns.unit.DEGREE, ns.unit.GRADIAN]);
 
 
     /***********************************************************
