@@ -30,9 +30,9 @@
 
     //Set default unit for the different scales
     $.extend(ns.unit, {
-        length   : ns.unit.METRIC,
-        area     : ns.unit.METRIC,
-        speed    : ns.unit.METRIC,
+        length   : ns.unit.NAUTICAL,
+        area     : ns.unit.NAUTICAL,
+        speed    : ns.unit.NAUTICAL,
         direction: ns.unit.DEGREE
     });
 
