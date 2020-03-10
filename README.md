@@ -23,15 +23,21 @@ http://FCOO.github.io/fcoo-unit/demo/
     window.fcoo.unit.DEGREE		//0-360 / -180-180
 	window.fcoo.unit.GRADIAN	//0-400 / -200-200
  
-	//The following methods are defined that conver to the current unit set by fcoo.settings.set(scale, unit)
+	//The following methods are defined that conver TO the current unit set by fcoo.settings.set(scale, unit)
 	window.fcoo.unit.getLength    : function( m   )
 	window.fcoo.unit.getArea      : function( m2  )
 	window.fcoo.unit.getSpeed     : function( ms  )
 	window.fcoo.unit.getDirection : function( deg )
 
+	//The following methods are defined that conver FROM the current unit set by fcoo.settings.set(scale, unit) to SI-unit
+	window.fcoo.unit.getLengthBack    : function( length    )
+	window.fcoo.unit.getAreaBack      : function( area      )
+	window.fcoo.unit.getSpeedBack     : function( speed     )
+	window.fcoo.unit.getDirectionBack : function( direction )
 	//Examlpe
-	window.fcoo.setting.set('speed', window.fcoo.unit.METRIC2 );
+	window.fcoo.setting.set('speed', window.fcoo.unit.METRIC2 ); //Speed unit is now km/h
 	window.fcoo.unit.getSpeed( 12.34 ); //Return 44.424 = 12.34m/s as km/h
+	window.fcoo.unit.getSpeedBack( 44.424 ); //Return 12.34 = 44.424km/h as m/s
 
 ## Scale and Units
 

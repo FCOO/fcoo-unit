@@ -44,18 +44,38 @@
             direction: {'DEGREE': 1, 'GRADIAN': 400/360}
         };
 
-    function convertValue(value, scale, unit){
+    /*
+    convertValue((value, scale, unit)
+    Convert value [SI-unit] of scale to current unit or unit (specified)
+    */
+    ns.unit.convertValue = function(value, scale, unit){
         unit = unit || ns.unit[scale];
         var factor = conversion[scale] ? conversion[scale][unit] || 1 : 1;
         return value*factor;
-    }
+    };
 
     //Create convertion-methods
     $.extend(ns.unit, {
-        getLength    : function( m   ){ return convertValue( m,  'length'     ); },
-        getArea      : function( m2  ){ return convertValue( m2, 'area'       ); },
-        getSpeed     : function( ms  ){ return convertValue( ms, 'speed'      ); },
-        getDirection : function( deg ){ return convertValue( deg, 'direction' ); }
+        getLength    : function( m   ){ return ns.unit.convertValue( m,   'length'    ); },
+        getArea      : function( m2  ){ return ns.unit.convertValue( m2,  'area'      ); },
+        getSpeed     : function( ms  ){ return ns.unit.convertValue( ms,  'speed'     ); },
+        getDirection : function( deg ){ return ns.unit.convertValue( deg, 'direction' ); }
+    });
+
+    /*
+    convertValueBack((value, scale, unit)
+    Convert value [current unit or unit (specified)] of scale to SI-unit
+    */
+    ns.unit.convertValueBack = function(value, scale, unit){
+        return value / ns.unit.convertValue(1, scale, unit);
+    };
+
+    //Create convertion-back-methods
+    $.extend(ns.unit, {
+        getLengthBack   : function( length    ){ return ns.unit.convertValueBack( length,   'length'     ); },
+        getAreaBack     : function( area      ){ return ns.unit.convertValueBack( area,      'area'      ); },
+        getSpeedBack    : function( speed     ){ return ns.unit.convertValueBack( speed,     'speed'     ); },
+        getDirectionBack: function( direction ){ return ns.unit.convertValueBack( direction, 'direction' ); }
     });
 
     /***********************************************************

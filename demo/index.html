@@ -42,6 +42,11 @@ See console
     fcoo.globalSetting.set({speed: ns.METRIC2});
     console.log('12.34m/s as km/h', ns.getSpeed(12.34));
 
+    console.log('12.34km/h as m/s', ns.getSpeedBack(12.34));
+
+    console.log('12.34km/h as km/h', ns.getSpeed( ns.getSpeedBack(12.34) ));
+
+
     $('body').on('contextmenu', function(){
         fcoo.globalSetting.edit(fcoo.events.UNITCHANGED);
         return false;
