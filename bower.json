@@ -1,33 +1,33 @@
 {
-  "name": "fcoo-unit",
-  "version": "1.2.0",
-  "homepage": "https://github.com/FCOO/fcoo-unit",
-  "authors": [
-    "Niels Holt"
-  ],
-  "description": "",
-  "main": [
-    "dist/fcoo-unit.js"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/FCOO/fcoo-unit.git"
-  },
-  "dependencies": {
-    "jquery": "latest",
-    "fcoo-number": "fcoo/fcoo-number#^1.1.0",
-    "fcoo-settings": "fcoo/fcoo-settings#^2.3.0"
-  },
-  "devDependencies": {},
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "moduleType": [
-    "es6"
-  ]
+    "name": "fcoo-unit",
+    "version": "1.2.0",
+    "homepage": "https://github.com/FCOO/fcoo-unit",
+    "authors": [
+        "Niels Holt"
+    ],
+    "description": "",
+    "main": [
+        "dist/fcoo-unit.js"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/FCOO/fcoo-unit.git"
+    },
+    "dependencies": {
+        "jquery": "latest",
+        "fcoo-number": "fcoo/fcoo-number#^1.1.0",
+        "fcoo-settings": "fcoo/fcoo-settings#^2.3.0"
+    },
+    "devDependencies": {},
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "moduleType": [
+        "es6"
+    ]
 }

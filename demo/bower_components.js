@@ -60514,9 +60514,13 @@ TODO:   truncate     : false. If true the column will be truncated. Normally onl
             });
 
             //Add value-format content
-            $.each( vfValueArray, function( index, vfValue ){
+            $.each( vfFormatArray, function( index ){
                 $._bsCreateElement( 'span', linkArray[ index ], titleArray[ index ], textStyleArray[ index ], textClassArray[index] )
-                    .vfValueFormat( vfValue || '', vfFormatArray[index], vfOptionsArray[index] )
+                    .vfValueFormat(
+                        vfValueArray[index] || '',
+                        vfFormatArray[index],
+                        vfOptionsArray[index]
+                    )
                     .appendTo( _this );
             });
 
@@ -66391,11 +66395,10 @@ window.location.hash
             $.each(options, function(index, settingOptions){
                 settingOptions = $.extend( {}, { callApply: true }, settingOptions );
                 var setting = new ns.Setting( settingOptions );
+                setting.group = _this;
                 _this.settings[settingOptions.id] = setting;
-
-                //If data is loaded => apply (else wait for data to be loaded)
-                if (_this.dataLoaded)
-                    setting.apply( _this.data[setting.options.id], !options.callApply );
+                setting.apply( _this.data[setting.options.id], !options.callApply );
+                _this.data[setting.options.id] = setting.value;
             });
         },
 
@@ -66413,7 +66416,6 @@ window.location.hash
         Load data from this.store with item-id and update (apply) all Setting
         ***********************************************/
         load: function( id ){
-            this.dataLoaded = false;
             this.loadData(id, $.proxy(this.onLoad, this));
         },
 
@@ -66423,7 +66425,6 @@ window.location.hash
         onLoad: function(data){
             var _this = this;
             $.extend(this.data, data);
-            this.dataLoaded = true;
 
             //Apply data to the Setting
             $.each( this.settings, function( id, setting ){
@@ -66463,10 +66464,16 @@ window.location.hash
 
 
         /***********************************************
-        set( data )
+        set( data OR id, value)
         data {ID:VALUE}
         ***********************************************/
-        set: function( data ){
+        set: function( dataOrId, value ){
+            var data = {};
+            if (arguments.length == 2)
+                data[dataOrId] = value;
+            else
+                data = dataOrId;
+
             if (this.options.simpleMode)
                 $.extend(this.data, data);
             else {
@@ -66536,11 +66543,11 @@ window.location.hash
                 });
 
                 this.modalForm = $.bsModalForm({
-                    id      : this.options.storeId,
-                    show    : false,
-                    header  : this.options.modalHeader,
-                    content : {type: 'accordion', list: list },
-
+                    id        : this.options.storeId,
+                    show      : false,
+                    header    : this.options.modalHeader,
+                    flexWidth : true,
+                    content   : {type: 'accordion', list: list },
                     onChanging: $.proxy(this.onChanging, this),
                     onCancel  : $.proxy(this.onCancel,   this),
                     onSubmit  : $.proxy(this.onSubmit,   this)
@@ -66553,7 +66560,6 @@ window.location.hash
             //Open accordion with id
             if (id)
                 this.modalForm.$bsModal.find('form > .accordion').bsOpenCard(id);
-
             this.modalForm.edit(data || this.data);
         },
 
@@ -66619,17 +66625,24 @@ window.location.hash
         }
     };
 
+
+
+
+
     /*******************************************************************************
     ********************************************************************************
     Setting( options )
-    options = {id, validator, applyFunc, defaultValue, globalEvents )
-    id [String]
-    validator [null] | [String] | [function( value)]. If [String] => using Url.js-extensions validation
-    applyFunc [function( value, id, defaultValue )] function to apply the settings for id
-    defaultValue
-    globalEvents {String} = Id of global-events in fcoo.events that aare fired when the setting is changed
-    onError [function( value, id )] (optional). Called if a new value is invalid according to validator
-    saveOnChanging [BOOLEAN]. If true the setting is saved during editing. When false the setting is only saved when edit-form submits
+    options =
+        id [String]
+        validator [null] | [String] | [function( value)]. If [String] => using Url.js-extensions validation
+        applyFunc [function( value, id, defaultValue )] function to apply the settings for id
+        defaultValue
+        globalEvents {String} = Id of global-events in fcoo.events that aare fired when the setting is changed
+        onError [function( value, id )] (optional). Called if a new value is invalid according to validator
+        saveOnChanging [BOOLEAN]. If true the setting is saved during editing. When false the setting is only saved when edit-form submits
+        modernizr BOOLEAN` (optional) default=false: If true the modernizr-class descriped in `src\_fcoo-settings.scss` is updated
+        modernizrOnlyValues []ID: List of the only values that are modernizr'ed. If empty all values are modernizr
+
     ********************************************************************************
     ********************************************************************************/
     function Setting( options ) {
@@ -66650,9 +66663,9 @@ window.location.hash
     //Extend the prototype
     ns.Setting.prototype = {
         apply:  function ( newValue, dontCallApplyFunc ){
-            var id = this.options.id;
+            var _this = this,
+                id = this.options.id;
             newValue = (newValue === undefined) ? this.options.defaultValue : newValue;
-
             if ( !window.Url.validateValue(''+newValue, this.options.validator) ){
                 if (this.options.onError)
                     this.options.onError( newValue, id );
@@ -66663,6 +66676,37 @@ window.location.hash
 
             if (!dontCallApplyFunc)
                 this.options.applyFunc( this.value, id, this.options.defaultValue );
+
+            //Update modernizr-classes (if any)
+            //The modernizr-class is given from this.group.modernizrPrefix plus the id of setting plus the value (if not boolean)
+            //Eq. In global-setting a Setting with id = "setting2" has the value "value3" =>
+            //modernizr is on for "global-setting-setting2-value3" and off for all other classes with prefix "global-setting-setting2-[VALUE])
+            if (this.options.modernizr){
+                var modernizr = {}; //={ID:BOOLEAN}
+                if ($.type(this.value) == 'boolean')
+                    //Value is boolean => just set simgle modernizr-class = this.global-setting-[ID]
+                    modernizr[id] = this.value;
+                else {
+                    //Find list of possible values in modal-content
+                    var modalContent = {};
+                    $.each(this.group.modalContent, function(groupId, contentList){
+                        $.each(contentList, function(index, content){
+                            if (content.id == id){
+                                modalContent = content;
+                                return false;
+                            }
+                        });
+                    });
+                    $.each(modalContent.list || modalContent.items || [], function(index, contentPart){
+                        if (!_this.options.modernizrOnlyValues || (_this.options.modernizrOnlyValues.indexOf(contentPart.id) != -1))
+                            modernizr[id+'-'+contentPart.id] = !!(newValue == contentPart.id);
+                    });
+                }
+                //Updaet modernizr-classes
+                $.each(modernizr, function(id, on){
+                    window.modernizrToggle( _this.group.options.modernizrPrefix + id, on );
+                });
+            }
 
             //Fire global-events (if any)
             if (this.options.globalEvents && ns.events && ns.events.fire)
@@ -66689,18 +66733,19 @@ window.location.hash
             storeId : 'GLOBAL',
             data    : localStorageData,
             autoSave: true,
+            modernizrPrefix: 'global-setting-',
 
             modalHeader: {
                 icon: 'fa-cog',
                 text: {da: 'Indstillinger', en:'Settings'}
             },
             accordionList: [
-                {id: ns.events.LANGUAGECHANGED,       header: {icon: 'fa-fw fa-comments',       text: {da: 'Sprog', en: 'Language'}} },
-                {id: ns.events.TIMEZONECHANGED,       header: {icon: 'fa-fw fa-globe',          text: {da: 'Tidszone', en: 'Time Zone'}} },
-                {id: ns.events.DATETIMEFORMATCHANGED, header: {icon: 'fa-fw fa-calendar-alt',   text: {da: 'Dato og klokkeslæt', en: 'Date and Time'}} },
-                {id: ns.events.LATLNGFORMATCHANGED,   header: {icon: 'fa-fw fa-map-marker-alt', text: {da: 'Positioner', en: 'Positions'}} },
-                {id: ns.events.UNITCHANGED,           header: {icon: 'fa-fw fa-ruler',          text: {da: 'Enheder', en: 'Units'}} },
-                {id: ns.events.NUMBERFORMATCHANGED,   header: {                                 text: ['12',{da: 'Talformat', en: 'Number Format'}]} },
+                {id: ns.events.LANGUAGECHANGED,       header: {icon: 'fa-comments',       iconClass: 'fa-fw', text: {da: 'Sprog', en: 'Language'}} },
+                {id: ns.events.TIMEZONECHANGED,       header: {icon: 'fa-globe',          iconClass: 'fa-fw', text: {da: 'Tidszone', en: 'Time Zone'}} },
+                {id: ns.events.DATETIMEFORMATCHANGED, header: {icon: 'fa-calendar-alt',   iconClass: 'fa-fw', text: {da: 'Dato og klokkeslæt', en: 'Date and Time'}} },
+                {id: ns.events.LATLNGFORMATCHANGED,   header: {icon: 'fa-map-marker-alt', iconClass: 'fa-fw', text: {da: 'Positioner', en: 'Positions'}} },
+                {id: ns.events.UNITCHANGED,           header: {icon: 'fa-ruler',          iconClass: 'fa-fw', text: {da: 'Enheder', en: 'Units'}} },
+                {id: ns.events.NUMBERFORMATCHANGED,   header: {                                               text: ['12',{da: 'Talformat', en: 'Number Format'}], textClass:['fa-fw', ''] } },
             ]
         });
 
@@ -67774,7 +67819,23 @@ return numeral;
         //Determinate the default decimal separator
         n = 1.1,
         s = n.toLocaleString(),
-        defaultDelimiters = s.indexOf(',') > -1 ? 'NONE_COMMA' : 'NONE_DOT';
+        defaultDelimiterId = s.indexOf(',') > -1 ? 'NONE_COMMA' : 'NONE_DOT';
+
+
+    //Using numeral.locale to save the different settings
+    var baseOptions = $.extend({}, window.numeral.locales['en']);
+
+    $.each(NumeralJsDelimiters, function(id, delimiter){
+        window.numeral.register('locale', id,
+            $.extend({}, baseOptions, {
+                delimiters: {
+                    thousands: delimiter.thousands,
+                    decimal  : delimiter.decimal
+                }
+            })
+        );
+    });
+    window.numeral.locale(defaultDelimiterId);
 
     /***********************************************************
     Set up and load number-formats (delimiters) via fcoo.globalSetting
@@ -67786,16 +67847,11 @@ return numeral;
                           return NumeralJsDelimiters[delimitersId] !== null;
                       },
         applyFunc   : function( delimitersId ){
-                          delimitersId = delimitersId ? delimitersId.toUpperCase() : null;
-                          var delimiters = NumeralJsDelimiters[delimitersId];
-                          if (delimiters)
-                              $.each( window.numeral.locales, function( key, options ){
-                                  options.delimiters.thousands = delimiters.thousands;
-                                  options.delimiters.decimal   = delimiters.decimal;
-                          });
+                          window.numeral.locale(NumeralJsDelimiters[delimitersId] ? delimitersId.toUpperCase() : defaultDelimiterId);
                       },
-        defaultValue: defaultDelimiters,
+        defaultValue: defaultDelimiterId,
         callApply   : true,
+        globalEvents: ns.events.NUMBERFORMATCHANGED
     });
 
     //Create content for globalSetting modal-form
@@ -67840,7 +67896,8 @@ return numeral;
 
     ns.number.numberFixedWidth = function( value, nrOfDigits, removeTrailingZeros ){
         //Example value = -13.57
-        var sign = value < 0 ? '-' : '';
+        var originalValue = value,
+            sign = value < 0 ? '-' : '';
         value = Math.abs(value);
 
         var digits    = Math.max(0, Math.floor(1 + log10(value)) ),
@@ -67862,15 +67919,25 @@ return numeral;
         if (removeTrailingZeros)
             result = result.replace(/0+$/gm, "");
 
+        //If result = "0" or "0.0...0" and value != 0 => return "~0" or "~0.0...0"
+        if ((originalValue != 0) && result.match(/^0((.|,)0+)?$/gm))
+            return '~'+result;
+
         return sign + result;
     };
 
 /* test
-//$.each([0, 0.129, 1, 1.002, 1.2, 10, 12.51, 100, 120.91, -500.99, 999.11, 1000, 1001.99, 12345.678], function(index, value){
-$.each([0, 0.1, 1, 10, 100, 1000, 10000, 100000, 1000000], function(index, value){
-    value = value;// + .1;
-    console.log(value,'=>', ns.number.numberFixedWidth(value, 4), ns.number.numberFixedWidth(value, 4, true));
-});
+    setTimeout(function(){
+        window.fcoo.globalSetting.set({number: 'SPACE_DOT'} );
+
+        //$.each([0, 0.129, 1, 1.002, 1.2, 10, 12.51, 100, 120.91, -500.99, 999.11, 1000, 1001.99, 12345.678], function(index, value){
+        $.each([0.0001, 0.001, 0.01, 0, 1, 10, 100, 1000, 10000, 100000, 1000000], function(index, value){
+            value = value;// + .1;
+            console.log(value,'=>', ns.number.numberFixedWidth(value, 2), ns.number.numberFixedWidth(value, 2, true));
+            console.log(-value,'=>', ns.number.numberFixedWidth(-value, 2), ns.number.numberFixedWidth(-value, 2, true));
+        });
+    }, 2000);
+
 //*/
 
 }(jQuery, this, document));
