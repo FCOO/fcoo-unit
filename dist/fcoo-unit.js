@@ -146,9 +146,9 @@ ns.unit.METRIC  : 'METRIC',    //m, m2, m/s
             type: 'radiobuttongroup',
             label: {icon:'far fa-tachometer', text:{da:'Fart', en:'Speed'}},
             items: [
-                {id: ns.unit.METRIC,   text: 'm/s',                   title: {da:'Meter pr. sekund',  en:'Metre per second'     }},
-                {id: ns.unit.METRIC2,  text: {da:'km/t', en:'km/h'},  title: {da:'Kilometer i timen', en:'Kilometre per hour'     }},
-                {id: ns.unit.NAUTICAL, text: {da:'Kn(ob)', en:'Kn(ot)'},                    title: {da:'Knob', en:'Knot'}},
+                {id: ns.unit.METRIC,   text: 'm/s',                             title: {da:'Meter pr. sekund',  en:'Metre per second'     }},
+                {id: ns.unit.METRIC2,  text: {da:'km/t', en:'km/h'},            title: {da:'Kilometer i timen', en:'Kilometre per hour'     }},
+                {id: ns.unit.NAUTICAL, text: {da:'Kn (Knob)', en:'Kn (Knot)'},  title: {da:'Knob', en:'Knot'}},
             ]
         },
         {
