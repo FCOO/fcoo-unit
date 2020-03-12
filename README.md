@@ -24,20 +24,21 @@ http://FCOO.github.io/fcoo-unit/demo/
 	window.fcoo.unit.GRADIAN	//0-400 / -200-200
  
 	//The following methods are defined that conver TO the current unit set by fcoo.settings.set(scale, unit)
-	window.fcoo.unit.getLength    : function( m   )
-	window.fcoo.unit.getArea      : function( m2  )
-	window.fcoo.unit.getSpeed     : function( ms  )
-	window.fcoo.unit.getDirection : function( deg )
+	window.fcoo.unit.getLength    : function( m  , round  )
+	window.fcoo.unit.getArea      : function( m2 , round  )
+	window.fcoo.unit.getSpeed     : function( ms , round  )
+	window.fcoo.unit.getDirection : function( deg, round  )
 
 	//The following methods are defined that conver FROM the current unit set by fcoo.settings.set(scale, unit) to SI-unit
-	window.fcoo.unit.getLengthBack    : function( length    )
-	window.fcoo.unit.getAreaBack      : function( area      )
-	window.fcoo.unit.getSpeedBack     : function( speed     )
-	window.fcoo.unit.getDirectionBack : function( direction )
+	window.fcoo.unit.getLengthBack    : function( length   , round  )
+	window.fcoo.unit.getAreaBack      : function( area     , round  )
+	window.fcoo.unit.getSpeedBack     : function( speed    , round  )
+	window.fcoo.unit.getDirectionBack : function( direction, round  )
 	//Examlpe
 	window.fcoo.setting.set('speed', window.fcoo.unit.METRIC2 ); //Speed unit is now km/h
 	window.fcoo.unit.getSpeed( 12.34 ); //Return 44.424 = 12.34m/s as km/h
 	window.fcoo.unit.getSpeedBack( 44.424 ); //Return 12.34 = 44.424km/h as m/s
+	window.fcoo.unit.getSpeedBack( 44.424, true ); //Return 12 = 44.424km/h as m/s rounded
 
 ## Scale and Units
 

@@ -48,34 +48,36 @@
     convertValue((value, scale, unit)
     Convert value [SI-unit] of scale to current unit or unit (specified)
     */
-    ns.unit.convertValue = function(value, scale, unit){
+    ns.unit.convertValue = function(value, scale, unit, round){
         unit = unit || ns.unit[scale];
-        var factor = conversion[scale] ? conversion[scale][unit] || 1 : 1;
-        return value*factor;
+        var factor = conversion[scale] ? conversion[scale][unit] || 1 : 1,
+            result = value*factor;
+        return round ? Math.round(result) : result;
     };
 
     //Create convertion-methods
     $.extend(ns.unit, {
-        getLength    : function( m   ){ return ns.unit.convertValue( m,   'length'    ); },
-        getArea      : function( m2  ){ return ns.unit.convertValue( m2,  'area'      ); },
-        getSpeed     : function( ms  ){ return ns.unit.convertValue( ms,  'speed'     ); },
-        getDirection : function( deg ){ return ns.unit.convertValue( deg, 'direction' ); }
+        getLength    : function( m  , round ){ return ns.unit.convertValue( m,   'length'   , null, round ); },
+        getArea      : function( m2 , round ){ return ns.unit.convertValue( m2,  'area'     , null, round ); },
+        getSpeed     : function( ms , round ){ return ns.unit.convertValue( ms,  'speed'    , null, round ); },
+        getDirection : function( deg, round ){ return ns.unit.convertValue( deg, 'direction', null, round ); }
     });
 
     /*
     convertValueBack((value, scale, unit)
     Convert value [current unit or unit (specified)] of scale to SI-unit
     */
-    ns.unit.convertValueBack = function(value, scale, unit){
-        return value / ns.unit.convertValue(1, scale, unit);
+    ns.unit.convertValueBack = function(value, scale, unit, round){
+        var result = value / ns.unit.convertValue(1, scale, unit);
+        return round ? Math.round(result) : result;
     };
 
     //Create convertion-back-methods
     $.extend(ns.unit, {
-        getLengthBack   : function( length    ){ return ns.unit.convertValueBack( length,   'length'     ); },
-        getAreaBack     : function( area      ){ return ns.unit.convertValueBack( area,      'area'      ); },
-        getSpeedBack    : function( speed     ){ return ns.unit.convertValueBack( speed,     'speed'     ); },
-        getDirectionBack: function( direction ){ return ns.unit.convertValueBack( direction, 'direction' ); }
+        getLengthBack   : function( length   , round ){ return ns.unit.convertValueBack( length,   'length'    , null, round ); },
+        getAreaBack     : function( area     , round ){ return ns.unit.convertValueBack( area,      'area'     , null, round ); },
+        getSpeedBack    : function( speed    , round ){ return ns.unit.convertValueBack( speed,     'speed'    , null, round ); },
+        getDirectionBack: function( direction, round ){ return ns.unit.convertValueBack( direction, 'direction', null, round ); }
     });
 
     /***********************************************************
