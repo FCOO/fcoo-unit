@@ -21,16 +21,18 @@
 
     //Create const to hold the name of the selected unit
     $.extend(ns.unit, {
-        METRIC  : 'METRIC',    //m, m2, m/s
-        METRIC2 : 'METRIC2',   //m, m2, km/t
+        METRIC  : 'METRIC',     //m,   m2,  m/s
+        METRIC2 : 'METRIC2',    //km, km2, km/t
+        FEET    : 'FEET',       //Feet
         NAUTICAL: 'NAUTICAL',   //nm, nm2, knots
-        DEGREE  : 'DEGREE',    //0-360 / -180-180
-        GRADIAN : 'GRADIAN',   //0-400 / -200-200
+        DEGREE  : 'DEGREE',     //0-360 / -180-180
+        GRADIAN : 'GRADIAN',    //0-400 / -200-200
     });
 
     //Set default unit for the different scales
     $.extend(ns.unit, {
         length   : ns.unit.NAUTICAL,
+        height   : ns.unit.METRIC,
         area     : ns.unit.NAUTICAL,
         speed    : ns.unit.NAUTICAL,
         direction: ns.unit.DEGREE
@@ -38,9 +40,10 @@
 
     //convertion = {length,area,speed,direction} of {unit: factor} = convert values from SI-unit to the value when unit is 'unit'
     var conversion = {
-            length   : {'METRIC': 1, 'METRIC2': 1,          'NAUTICAL': 1/1852},
-            area     : {'METRIC': 1, 'METRIC2': 1,          'NAUTICAL': 1/(1852*1852)},
-            speed    : {'METRIC': 1, 'METRIC2': 60*60/1000, 'NAUTICAL': 60*60/1852},
+            length   : {'METRIC': 1, 'METRIC2': 1/1000,         'NAUTICAL': 1/1852},
+            height   : {'METRIC': 1, 'METRIC2': 1/1000,         'FEET'    : 1/0.3048},
+            area     : {'METRIC': 1, 'METRIC2': 1/(1000*1000),  'NAUTICAL': 1/(1852*1852)},
+            speed    : {'METRIC': 1, 'METRIC2': 60*60/1000,     'NAUTICAL': 60*60/1852},
             direction: {'DEGREE': 1, 'GRADIAN': 400/360}
         };
 
@@ -58,6 +61,7 @@
     //Create convertion-methods
     $.extend(ns.unit, {
         getLength    : function( m  , round ){ return ns.unit.convertValue( m,   'length'   , null, round ); },
+        getHeight    : function( m  , round ){ return ns.unit.convertValue( m,   'height'   , null, round ); },
         getArea      : function( m2 , round ){ return ns.unit.convertValue( m2,  'area'     , null, round ); },
         getSpeed     : function( ms , round ){ return ns.unit.convertValue( ms,  'speed'    , null, round ); },
         getDirection : function( deg, round ){ return ns.unit.convertValue( deg, 'direction', null, round ); }
@@ -74,7 +78,8 @@
 
     //Create convertion-back-methods
     $.extend(ns.unit, {
-        getLengthBack   : function( length   , round ){ return ns.unit.convertValueBack( length,   'length'    , null, round ); },
+        getLengthBack   : function( length   , round ){ return ns.unit.convertValueBack( length,    'length'   , null, round ); },
+        getHeightBack   : function( height   , round ){ return ns.unit.convertValueBack( height,    'height'   , null, round ); },
         getAreaBack     : function( area     , round ){ return ns.unit.convertValueBack( area,      'area'     , null, round ); },
         getSpeedBack    : function( speed    , round ){ return ns.unit.convertValueBack( speed,     'speed'    , null, round ); },
         getDirectionBack: function( direction, round ){ return ns.unit.convertValueBack( direction, 'direction', null, round ); }
@@ -94,10 +99,11 @@
         });
     }
 
-    addSetting('length',    ns.unit.NAUTICAL, [ns.unit.METRIC, ns.unit.NAUTICAL]);
-    addSetting('area',      ns.unit.NAUTICAL, [ns.unit.METRIC, ns.unit.NAUTICAL]);
-    addSetting('speed',     ns.unit.NAUTICAL, [ns.unit.METRIC, ns.unit.METRIC2, ns.unit.NAUTICAL]);
-    addSetting('direction', ns.unit.DEGREE,   [ns.unit.DEGREE, ns.unit.GRADIAN]);
+    addSetting('length',    ns.unit.NAUTICAL,   [ns.unit.METRIC2, ns.unit.NAUTICAL                   ]);
+    addSetting('height',    ns.unit.METRIC,     [ns.unit.METRIC,  ns.unit.METRIC2,  ns.unit.FEET     ]);
+    addSetting('area',      ns.unit.NAUTICAL,   [ns.unit.METRIC,  ns.unit.NAUTICAL                   ]);
+    addSetting('speed',     ns.unit.NAUTICAL,   [ns.unit.METRIC,  ns.unit.METRIC2,  ns.unit.NAUTICAL ]);
+    addSetting('direction', ns.unit.DEGREE,     [ns.unit.DEGREE,  ns.unit.GRADIAN                    ]);
 
 
     /***********************************************************
@@ -130,10 +136,22 @@ ns.unit.METRIC  : 'METRIC',    //m, m2, m/s
             type: 'radiobuttongroup',
             label: {icon:'fa-ruler-horizontal', text:{da:'Længde', en:'Length'}},
             items: [
-                {id: ns.unit.METRIC,   text: 'km', title: {da:'Kilometer', en:'Kilometre'    }},
+                {id: ns.unit.METRIC2,  text: 'km', title: {da:'Kilometer', en:'Kilometre'    }},
                 {id: ns.unit.NAUTICAL, text: 'nm', title: {da:'Sømil',     en:'Nautical mile'}},
             ]
         },
+
+        {
+            id: 'height',
+            type: 'radiobuttongroup',
+            label: {icon:'fa-ruler-vertical', text:{da:'Højde', en:'Hight'}},
+            items: [
+                {id: ns.unit.METRIC,    text: 'm',                          title: {da:'Kilometer', en:'Kilometre'    }},
+                {id: ns.unit.METRIC2,   text: 'km',                         title: {da:'Kilometer', en:'Kilometre'    }},
+                {id: ns.unit.FEET,      text: {da:'Fod (eng)', en:'Feet'},  title: {da:'Fod (eng)',     en:'Feet'}},
+            ]
+        },
+
         {
             id: 'area',
             type: 'radiobuttongroup',

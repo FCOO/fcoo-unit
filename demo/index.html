@@ -30,21 +30,26 @@ See console
 
     console.log('START', ns);
 
-    fcoo.globalSetting.set({length: ns.METRIC});
-    console.log('123m as m', ns.getLength(123));
+    fcoo.globalSetting.set({length: ns.METRIC2});
+    console.log('L=123m as km', ns.getLength(123));
     fcoo.globalSetting.set({length: ns.NAUTICAL});
-    console.log('1234m as nm', ns.getLength(1234));
+    console.log('L=1234m as nm', ns.getLength(1234));
+
+    fcoo.globalSetting.set({height: ns.METRIC2});
+    console.log('H=1234m as km', ns.getHeight(1234));
+    fcoo.globalSetting.set({height: ns.FEET});
+    console.log('H=123m as feet', ns.getHeight(123));
 
     fcoo.globalSetting.set({speed: ns.METRIC});
-    console.log('123m/s as m/s', ns.getSpeed(123));
+    console.log('S=123m/s as m/s', ns.getSpeed(123));
     fcoo.globalSetting.set({speed: ns.NAUTICAL});
-    console.log('12.34m/s as knots', ns.getSpeed(12.34));
+    console.log('S=12.34m/s as knots', ns.getSpeed(12.34));
     fcoo.globalSetting.set({speed: ns.METRIC2});
-    console.log('12.34m/s as km/h', ns.getSpeed(12.34));
+    console.log('S=12.34m/s as km/h', ns.getSpeed(12.34));
 
-    console.log('12.34km/h as m/s', ns.getSpeedBack(12.34));
+    console.log('S=12.34km/h as m/s', ns.getSpeedBack(12.34));
 
-    console.log('12.34km/h as km/h', ns.getSpeed( ns.getSpeedBack(12.34) ));
+    console.log('S=12.34km/h as km/h', ns.getSpeed( ns.getSpeedBack(12.34) ));
 
 
     $('body').on('contextmenu', function(){
