@@ -144,7 +144,7 @@ ns.unit.METRIC  : 'METRIC',    //m, m2, m/s
         {
             id: 'height',
             type: 'radiobuttongroup',
-            label: {icon:'fa-ruler-vertical', text:{da:'Højde', en:'Hight'}},
+            label: {icon:'fa-ruler-vertical', text:{da:'Højde', en:'Height'}},
             items: [
                 {id: ns.unit.METRIC,    text: 'm',                          title: {da:'Kilometer', en:'Kilometre'    }},
                 {id: ns.unit.METRIC2,   text: 'km',                         title: {da:'Kilometer', en:'Kilometre'    }},
